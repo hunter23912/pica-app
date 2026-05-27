@@ -27,6 +27,8 @@ pub fn run() {
             user::login,
             user::get_user_profile,
             comic::search_comic,
+            comic::get_favorite,
+            comic::get_rank,
             create_download_task
         ])
         .run(tauri::generate_context!())

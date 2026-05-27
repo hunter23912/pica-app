@@ -35,6 +35,20 @@ export type DownloadTask = {
   id: string;
   comicTitle: string;
   chapterTitle: string;
-  state: "pending" | "downloading" | "completed";
+  state:
+    | "pending"
+    | "downloading"
+    | "completed"
+    | "canceled"
+    | "failed"
+    | "paused";
   progress: number;
+};
+
+export type FavoriteResult = {
+  comics: ComicInSearch[];
+};
+
+export type RankResult = {
+  comics: ComicInSearch[];
 };

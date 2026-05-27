@@ -14,7 +14,9 @@ function createFakeChapters(comicId: string): Chapter[] {
 export function ChapterPane() {
   const pickedComic = useAppStore((state) => state.pickedComic);
   const addDownloadTask = useAppStore((state) => state.addDownloadTask);
+  const hasDownloadTask = useAppStore((state) => state.hasDownloadTask);
   const [selectedChapterIds, setSelectedChapterIds] = useState<string[]>([]);
+  const [message, setMessage] = useState("");
 
   if (!pickedComic) {
     return <section className="pane">请先从搜索结果中选择漫画</section>;
@@ -37,12 +39,15 @@ export function ChapterPane() {
       selectedChapterIds.includes(chapter.id),
     );
 
-    await startFakeDownloadTasks({
+    const result = await startFakeDownloadTasks({
       comic: pickedComic,
       chapters: selectedChapters,
       addDownloadTask,
+      hasDownloadTask,
     });
-
+    setMessage(
+      `已创建 ${result.createdCount} 个任务，跳过 ${result.skippedCount} 个重复任务。`,
+    );
     setSelectedChapterIds([]);
   };
 
@@ -51,6 +56,7 @@ export function ChapterPane() {
       <h2>{pickedComic.title}</h2>
       <p>作者: {pickedComic.author}</p>
       <p>已选择 {selectedChapterIds.length} 个章节</p>
+      {message && <p>{message}</p>}
 
       <div className="chapter-list">
         {chapters.map((chapter) => (

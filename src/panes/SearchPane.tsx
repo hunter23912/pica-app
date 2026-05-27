@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { searchComic } from "../api/comic";
+import { ComicCard } from "../components/ComicCard";
 import { useAppStore } from "../store";
 
 export function SearchPane() {
@@ -50,15 +51,12 @@ export function SearchPane() {
       {searchResult && (
         <div className="comic-list">
           {searchResult.comics.map((comic) => (
-            // <div key={comic.id} className="comic-card">
-            <button
+            <ComicCard
               key={comic.id}
-              className="comic-card"
+              title={comic.title}
+              author={comic.author}
               onClick={() => handlePickComic(comic)}
-            >
-              <strong>{comic.title}</strong>
-              <span>{comic.author}</span>
-            </button>
+            />
           ))}
         </div>
       )}

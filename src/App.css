@@ -157,6 +157,12 @@ button:active {
   justify-content: space-between;
 }
 
+.panel-header button {
+  width: auto;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
 .empty-panel {
   margin-top: 16px;
   padding: 24px;
@@ -223,6 +229,32 @@ button:active {
   justify-content: space-between;
   gap: 8px;
   color: #cfcfcf;
+}
+
+.download-task-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.download-task-title-row button {
+  width: auto;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.download-task-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.download-task-actions button {
+  width: auto;
+  padding: 4px 8px;
+  font-size: 12px;
 }
 
 .progress-bar {
