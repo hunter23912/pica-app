@@ -169,6 +169,10 @@ button:active {
   color: #aaa;
 }
 
+.error-text {
+  color: #ff6b6b;
+}
+
 .dialog-backdrop {
   position: fixed;
   inset: 0;

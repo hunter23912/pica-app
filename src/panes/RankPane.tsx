@@ -1,12 +1,13 @@
 import { getRank } from "../api/rank";
 import { ComicCard } from "../components/ComicCard";
+import { usePickComic } from "../hooks/usePickComic";
 import { useAppStore } from "../store";
 
 export function RankPane() {
   const rankResult = useAppStore((state) => state.rankResult);
   const setRankResult = useAppStore((state) => state.setRankResult);
-  const setPickedComic = useAppStore((state) => state.setPickedComic);
-  const setCurrentTab = useAppStore((state) => state.setCurrentTab);
+
+  const pickComic = usePickComic();
 
   const handleLoadRank = async () => {
     try {
@@ -16,20 +17,6 @@ export function RankPane() {
       console.error(error);
       setRankResult(undefined);
     }
-  };
-
-  const handlePickComic = (comic: {
-    id: string;
-    title: string;
-    author: string;
-  }) => {
-    setPickedComic({
-      id: comic.id,
-      title: comic.title,
-      author: comic.author,
-    });
-
-    setCurrentTab("chapter");
   };
 
   return (
@@ -43,7 +30,7 @@ export function RankPane() {
               key={comic.id}
               title={comic.title}
               author={comic.author}
-              onClick={() => handlePickComic(comic)}
+              onClick={() => pickComic(comic)}
             />
           ))}
         </div>

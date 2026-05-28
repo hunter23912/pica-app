@@ -1,5 +1,8 @@
 export type Config = {
   token: string;
+  downloadDir: string;
+  chapterConcurrency: number;
+  imageConcurrency: number;
 };
 
 export type UserProfile = {
@@ -51,4 +54,15 @@ export type FavoriteResult = {
 
 export type RankResult = {
   comics: ComicInSearch[];
+};
+
+export type LibraryResult = {
+  comics: ComicInSearch[];
+};
+
+export type ComicDetail = {
+  id: string;
+  title: string;
+  author: string;
+  chapters: Chapter[];
 };

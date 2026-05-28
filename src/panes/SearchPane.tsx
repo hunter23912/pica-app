@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { searchComic } from "../api/comic";
 import { ComicCard } from "../components/ComicCard";
+import { usePickComic } from "../hooks/usePickComic";
 import { useAppStore } from "../store";
 
 export function SearchPane() {
-  const setPickedComic = useAppStore((state) => state.setPickedComic);
-  const setCurrentTab = useAppStore((state) => state.setCurrentTab);
   const searchResult = useAppStore((state) => state.searchResult);
   const setSearchResult = useAppStore((state) => state.setSearchResult);
   const [keyword, setKeyword] = useState("");
   const [message, setMessage] = useState("");
+
+  const pickComic = usePickComic();
 
   const handleSearch = async () => {
     try {
@@ -20,19 +21,6 @@ export function SearchPane() {
       setSearchResult(undefined);
       setMessage(String(error));
     }
-  };
-
-  const handlePickComic = (comic: {
-    id: string;
-    title: string;
-    author: string;
-  }) => {
-    setPickedComic({
-      id: comic.id,
-      title: comic.title,
-      author: comic.author,
-    });
-    setCurrentTab("chapter");
   };
 
   return (
@@ -55,7 +43,7 @@ export function SearchPane() {
               key={comic.id}
               title={comic.title}
               author={comic.author}
-              onClick={() => handlePickComic(comic)}
+              onClick={() => pickComic(comic)}
             />
           ))}
         </div>

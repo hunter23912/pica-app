@@ -8,6 +8,7 @@ import type {
   UserProfile,
   FavoriteResult,
   RankResult,
+  LibraryResult,
 } from "./types";
 
 type ConfigSlice = {
@@ -27,10 +28,12 @@ type NavigationSlice = {
   searchResult?: SearchResult;
   favoriteResult?: FavoriteResult;
   rankResult?: RankResult;
+  libraryResult?: LibraryResult;
   setPickedComic: (comic?: Comic) => void;
   setSearchResult: (result?: SearchResult) => void;
   setFavoriteResult: (result?: FavoriteResult) => void;
   setRankResult: (result?: RankResult) => void;
+  setLibraryResult: (result?: LibraryResult) => void;
   setCurrentTab: (tab: MainTab) => void;
 };
 
@@ -90,6 +93,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   searchResult: undefined,
   favoriteResult: undefined,
   rankResult: undefined,
+  libraryResult: undefined,
   setPickedComic: (comic) => {
     set({ pickedComic: comic });
   },
@@ -101,6 +105,9 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
   setRankResult: (rankResult) => {
     set({ rankResult });
+  },
+  setLibraryResult: (libraryResult) => {
+    set({ libraryResult });
   },
   setCurrentTab: (tab) => {
     set({ currentTab: tab });

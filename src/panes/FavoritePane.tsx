@@ -1,12 +1,13 @@
 import { getFavorite } from "../api/favorite";
 import { useAppStore } from "../store";
 import { ComicCard } from "../components/ComicCard";
+import { usePickComic } from "../hooks/usePickComic";
 
 export function FavoritePane() {
   const favoriteResult = useAppStore((state) => state.favoriteResult);
   const setFavoriteResult = useAppStore((state) => state.setFavoriteResult);
-  const setPickedComic = useAppStore((state) => state.setPickedComic);
-  const setCurrentTab = useAppStore((state) => state.setCurrentTab);
+
+  const pickComic = usePickComic();
 
   const handleLoadFavorite = async () => {
     try {
@@ -16,19 +17,6 @@ export function FavoritePane() {
       console.error(error);
       setFavoriteResult(undefined);
     }
-  };
-
-  const handlePickComic = (comic: {
-    id: string;
-    title: string;
-    author: string;
-  }) => {
-    setPickedComic({
-      id: comic.id,
-      title: comic.title,
-      author: comic.author,
-    });
-    setCurrentTab("chapter");
   };
 
   return (
@@ -42,7 +30,7 @@ export function FavoritePane() {
               key={comic.id}
               title={comic.title}
               author={comic.author}
-              onClick={() => handlePickComic(comic)}
+              onClick={() => pickComic(comic)}
             />
           ))}
         </div>

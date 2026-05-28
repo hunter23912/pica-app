@@ -142,12 +142,15 @@
 - 配置闭环：Rust `Config`、`get_config`、`save_config`，token 持久化到 Tauri app data 的 `config.json`
 - 用户闭环：假 `login`、依赖 token 的假 `get_user_profile`、前端 `TopBar` 和 `LoginDialog`
 - 搜索闭环：Rust 假 `search_comic`、前端 `SearchPane`、搜索结果进入章节详情
-- 收藏/排行闭环：Rust 假 `get_favorite`、`get_rank`，前端收藏夹和排行榜可进入章节详情
+- 收藏/排行/库存闭环：Rust 假 `get_favorite`、`get_rank`、`get_downloaded_comics`，前端列表可进入章节详情
 - 页面骨架：`AppShell`、主 Tabs、右侧 `DownloadPanel`
-- 章节闭环：假章节列表、勾选章节、创建下载任务
+- 漫画详情闭环：Rust 假 `get_comic_detail` 返回详情和章节，前端 `ChapterPane` 加载后勾选章节、创建下载任务
 - 下载闭环：Rust `create_download_task` command 创建任务，Rust 通过 `download_task_event` 发送进度事件，前端监听并更新 Zustand，下载列表显示状态、百分比和进度条
 - 下载任务控制：已实现任务去重、取消、暂停/恢复状态雏形、清除非活跃任务记录
 - 状态整理：`store.ts` 已按 Config/User/Navigation/Download slice 分区整理
+- 交互整理：已抽取 `usePickComic` 和 `ComicCard` 复用列表进入详情逻辑
+- 配置扩展：`Config` 已新增 `downloadDir`、`chapterConcurrency`、`imageConcurrency`，并兼容旧配置默认值
+- 后端整理：`comic.rs` 已集中假数据 helper 和鉴权 helper，便于后续替换为真实 PicaClient
 
 关键前端结构：
 
@@ -155,7 +158,7 @@
 - `src/api/*`：封装 Tauri commands
 - `src/hooks/useDownloadTaskEvents.ts`：监听 Rust 下载任务事件
 - `src/components/*`：应用壳、顶部栏、Tabs、下载面板、登录弹窗
-- `src/panes/*`：搜索、收藏夹、排行榜、章节详情、库存占位页
+- `src/panes/*`：搜索、收藏夹、排行榜、本地库存、章节详情
 
 关键后端结构：
 
@@ -174,6 +177,6 @@ Rust event → useDownloadTaskEvents → Zustand store → React UI
 
 下一步建议：
 
-- 抽取“选择漫画并进入章节详情”的重复逻辑
-- 完成本地库存页雏形
-- 再逐步把假搜索/收藏/排行/章节替换为真实 PicaClient 数据
+- 做设置弹窗雏形，编辑并保存下载目录、章节并发数、图片并发数
+- 然后将配置接入假下载任务逻辑
+- 再逐步把假搜索/收藏/排行/详情替换为真实 PicaClient 数据

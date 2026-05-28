@@ -2,14 +2,21 @@ use std::fs;
 use tauri::{AppHandle, Manager};
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(default, rename_all = "camelCase")]
 pub struct Config {
     pub token: String,
+    pub download_dir: String,
+    pub chapter_concurrency: u32,
+    pub image_concurrency: u32,
 }
 
 impl Default for Config {
     fn default() -> Self {
         Self {
             token: String::new(),
+            download_dir: String::new(),
+            chapter_concurrency: 2,
+            image_concurrency: 4,
         }
     }
 }
