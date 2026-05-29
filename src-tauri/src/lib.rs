@@ -4,7 +4,6 @@ mod download;
 mod user;
 
 use config::Config;
-use download::create_download_task;
 use tauri::AppHandle;
 
 #[tauri::command]
@@ -21,6 +20,7 @@ fn save_config(app: AppHandle, config: Config) -> Result<(), String> {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
             get_config,
             save_config,
@@ -31,7 +31,9 @@ pub fn run() {
             comic::get_rank,
             comic::get_downloaded_comics,
             comic::get_comic_detail,
-            create_download_task
+            download::create_download_task,
+            download::open_download_dir,
+            download::get_default_download_dir,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -51,4 +51,22 @@ impl Config {
 
         Ok(())
     }
+
+    pub fn default_download_dir(app: &AppHandle) -> Result<String, String> {
+        let dir = app
+            .path()
+            .app_data_dir()
+            .map_err(|err| err.to_string())?
+            .join("downloads");
+
+        Ok(dir.to_string_lossy().to_string())
+    }
+
+    pub fn effective_download_dir(&self, app: &AppHandle) -> Result<String, String> {
+        if self.download_dir.trim().is_empty() {
+            return Self::default_download_dir(app);
+        }
+
+        Ok(self.download_dir.clone())
+    }
 }
