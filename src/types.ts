@@ -38,6 +38,9 @@ export type DownloadTask = {
   id: string;
   comicTitle: string;
   chapterTitle: string;
+  downloadDir: string;
+  chapterConcurrency: number;
+  imageConcurrency: number;
   state:
     | "pending"
     | "downloading"

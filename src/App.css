@@ -261,6 +261,11 @@ button:active {
   font-size: 12px;
 }
 
+.download-task-config {
+  color: #a8a8a8;
+  font-size: 13px;
+}
+
 .progress-bar {
   height: 8px;
   overflow: hidden;
@@ -273,6 +278,28 @@ button:active {
   border-radius: inherit;
   background: #2d5cff;
   transition: width 0.25s ease;
+}
+
+.settings-dialog {
+  width: min(480px, calc(100vw - 32px));
+}
+
+.form-field {
+  display: grid;
+  gap: 6px;
+  text-align: left;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.field-help {
+  margin: 0;
+  color: #a8a8a8;
+  font-size: 13px;
 }
 
 @media (max-width: 900px) {

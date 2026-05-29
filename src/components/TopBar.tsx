@@ -4,6 +4,9 @@ import { saveConfig } from "../api/config";
 import { useAppStore } from "../store";
 import { getUserProfile } from "../api/user";
 import { LoginDialog } from "./LoginDialog";
+import { SettingsDialog } from "./SettingsDialog";
+import type { Config } from "../types";
+import { openDownloadDir } from "../api/shell";
 
 export function TopBar() {
   const config = useAppStore((state) => state.config);
@@ -13,6 +16,7 @@ export function TopBar() {
   const setUserProfile = useAppStore((state) => state.setUserProfile);
 
   const [loginOpen, setLoginOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [message, setMessage] = useState("");
 
   const handleSaveConfig = async () => {
@@ -22,6 +26,12 @@ export function TopBar() {
 
     await saveConfig(config);
     setMessage("保存配置成功");
+  };
+
+  const handleSaveSettings = async (nextConfig: Config) => {
+    setConfig(nextConfig);
+    await saveConfig(nextConfig);
+    setMessage("设置已保存");
   };
 
   const handleLogin = async (email: string, password: string) => {
@@ -56,6 +66,14 @@ export function TopBar() {
     return null;
   }
 
+  const handleOpenDownloadDir = async () => {
+    try {
+      await openDownloadDir();
+    } catch (error) {
+      setMessage(String(error));
+    }
+  };
+
   return (
     <header className="top-bar">
       <h1>Pica App</h1>
@@ -68,6 +86,8 @@ export function TopBar() {
       />
       <button onClick={handleSaveConfig}>保存配置</button>
       <button onClick={() => setLoginOpen(true)}>登录</button>
+      <button onClick={() => setSettingsOpen(true)}>设置</button>
+      <button onClick={handleOpenDownloadDir}>打开下载目录</button>
       <button onClick={loadUserProfile}>获取用户信息</button>
 
       {message && <p>{message}</p>}
@@ -75,6 +95,12 @@ export function TopBar() {
         open={loginOpen}
         onClose={() => setLoginOpen(false)}
         onLogin={handleLogin}
+      />
+      <SettingsDialog
+        open={settingsOpen}
+        config={config}
+        onClose={() => setSettingsOpen(false)}
+        onSave={handleSaveSettings}
       />
     </header>
   );

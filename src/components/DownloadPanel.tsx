@@ -64,6 +64,15 @@ export function DownloadPanel() {
                 </div>
               </div>
               <span>{task.chapterTitle}</span>
+              <span className="download-task-config">
+                章节并发 {task.chapterConcurrency} / 图片并发{" "}
+                {task.imageConcurrency}
+              </span>
+              {task.downloadDir && (
+                <span className="download-task-config">
+                  目录：{task.downloadDir}
+                </span>
+              )}
               <div className="download-task-meta">
                 <span>{getTaskStateText(task.state)}</span>
                 <span>{task.progress}%</span>

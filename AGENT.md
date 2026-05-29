@@ -150,6 +150,9 @@
 - 状态整理：`store.ts` 已按 Config/User/Navigation/Download slice 分区整理
 - 交互整理：已抽取 `usePickComic` 和 `ComicCard` 复用列表进入详情逻辑
 - 配置扩展：`Config` 已新增 `downloadDir`、`chapterConcurrency`、`imageConcurrency`，并兼容旧配置默认值
+- 设置闭环：已实现 `SettingsDialog`，可选择真实本地下载目录、编辑并发数、校验并保存配置
+- 目录能力：Rust 提供默认下载目录、打开下载目录 command，前端显示默认目录提示
+- 配置接入：下载任务会读取配置快照，并在下载列表显示下载目录和并发数
 - 后端整理：`comic.rs` 已集中假数据 helper 和鉴权 helper，便于后续替换为真实 PicaClient
 
 关键前端结构：
@@ -157,7 +160,7 @@
 - `src/store.ts`：Zustand 全局状态，按 Config/User/Navigation/Download 分区
 - `src/api/*`：封装 Tauri commands
 - `src/hooks/useDownloadTaskEvents.ts`：监听 Rust 下载任务事件
-- `src/components/*`：应用壳、顶部栏、Tabs、下载面板、登录弹窗
+- `src/components/*`：应用壳、顶部栏、Tabs、下载面板、登录弹窗、设置弹窗
 - `src/panes/*`：搜索、收藏夹、排行榜、本地库存、章节详情
 
 关键后端结构：
@@ -177,6 +180,6 @@ Rust event → useDownloadTaskEvents → Zustand store → React UI
 
 下一步建议：
 
-- 做设置弹窗雏形，编辑并保存下载目录、章节并发数、图片并发数
-- 然后将配置接入假下载任务逻辑
+- 将下载任务从纯模拟推进到“落盘雏形”：按下载目录创建漫画/章节文件夹和元数据占位文件
+- 或先做日志面板雏形：Rust emit 日志事件，前端显示最近日志
 - 再逐步把假搜索/收藏/排行/详情替换为真实 PicaClient 数据
