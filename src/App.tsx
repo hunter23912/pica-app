@@ -4,6 +4,7 @@ import { getConfig } from "./api/config";
 import { getUserProfile } from "./api/user";
 import { AppShell } from "./components/AppShell";
 import { useAppStore } from "./store";
+import { useDownloadLogEvents } from "./hooks/useDownloadLogEvents";
 import { useDownloadTaskEvents } from "./hooks/useDownloadTaskEvents";
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
   const setUserProfile = useAppStore((state) => state.setUserProfile);
 
   useDownloadTaskEvents();
+  useDownloadLogEvents();
 
   useEffect(() => {
     async function loadConfig() {

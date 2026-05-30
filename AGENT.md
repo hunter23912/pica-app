@@ -147,13 +147,20 @@
 - 漫画详情闭环：Rust 假 `get_comic_detail` 返回详情和章节，前端 `ChapterPane` 加载后勾选章节、创建下载任务
 - 下载闭环：Rust `create_download_task` command 创建任务，Rust 通过 `download_task_event` 发送进度事件，前端监听并更新 Zustand，下载列表显示状态、百分比和进度条
 - 下载任务控制：已实现任务去重、取消、暂停/恢复状态雏形、清除非活跃任务记录
+- 下载落盘雏形：下载任务会创建漫画/章节目录，写入漫画 `metadata.json`、章节 `chapter.json` 和占位图片文件
+- 下载结构化：章节元数据已包含 `files/images`，图片项带 `index/url/fileName/state`，下载流程已拆成图片源获取、单图保存、任务执行
+- 下载日志：Rust 会发出 `download_log_event`，前端会监听并在下载面板显示最近日志
+- 目录体验：已支持打开下载目录和已完成任务的章节目录
+- 本地库存雏形：Rust 会扫描下载目录生成本地漫画列表，并根据章节元数据统计已完成章节数
+- 章节状态识别：章节详情可读取本地章节状态，已完成章节禁用重复下载
+- 总章节数修正：创建下载任务时写入 `chapterCount`，本地库存优先读取漫画元数据，避免只下载部分章节时显示成 `2/2`
 - 状态整理：`store.ts` 已按 Config/User/Navigation/Download slice 分区整理
 - 交互整理：已抽取 `usePickComic` 和 `ComicCard` 复用列表进入详情逻辑
 - 配置扩展：`Config` 已新增 `downloadDir`、`chapterConcurrency`、`imageConcurrency`，并兼容旧配置默认值
 - 设置闭环：已实现 `SettingsDialog`，可选择真实本地下载目录、编辑并发数、校验并保存配置
 - 目录能力：Rust 提供默认下载目录、打开下载目录 command，前端显示默认目录提示
 - 配置接入：下载任务会读取配置快照，并在下载列表显示下载目录和并发数
-- 后端整理：`comic.rs` 已集中假数据 helper 和鉴权 helper，便于后续替换为真实 PicaClient
+- 后端整理：假数据源已拆到 `fake_pica.rs`，真实 API 客户端骨架已建立为 `pica_client.rs`
 
 关键前端结构：
 
@@ -167,8 +174,10 @@
 
 - `src-tauri/src/config.rs`：配置读写
 - `src-tauri/src/user.rs`：假登录和假用户信息
-- `src-tauri/src/comic.rs`：假搜索
-- `src-tauri/src/download.rs`：假下载任务和事件进度
+- `src-tauri/src/comic.rs`：Tauri 内容 commands、本地库存扫描、章节状态合并
+- `src-tauri/src/fake_pica.rs`：当前假搜索/收藏/排行/章节数据源
+- `src-tauri/src/pica_client.rs`：真实 Pica API 客户端骨架，后续逐步接真实请求
+- `src-tauri/src/download.rs`：下载任务、进度事件、日志事件、本地元数据写入
 - `src-tauri/src/lib.rs`：注册 Tauri commands
 
 当前已跑通的核心链路：
@@ -180,6 +189,6 @@ Rust event → useDownloadTaskEvents → Zustand store → React UI
 
 下一步建议：
 
-- 将下载任务从纯模拟推进到“落盘雏形”：按下载目录创建漫画/章节文件夹和元数据占位文件
-- 或先做日志面板雏形：Rust emit 日志事件，前端显示最近日志
-- 再逐步把假搜索/收藏/排行/详情替换为真实 PicaClient 数据
+- 给 `Config` 增加 `useRealApi` 开关，并在 `SettingsDialog` 中提供切换入口
+- 在 `comic.rs` 中根据开关选择 `fake_pica` 或 `PicaClient`，先让真实 API 路径返回明确的“尚未接入”错误
+- 后续逐步实现 `PicaClient` 的登录/搜索/收藏/排行/章节图片接口，再把 `download.rs` 的 fake 图片源替换为真实图片源

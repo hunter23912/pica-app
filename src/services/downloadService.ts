@@ -1,24 +1,26 @@
 import type { Chapter, Comic, DownloadTask } from "../types";
 import { createDownloadTask } from "../api/download";
 
-type FakeDownloadServiceParams = {
+type DownloadServiceParams = {
   comic: Comic;
   chapters: Chapter[];
+  chapterCount: number;
   addDownloadTask: (task: DownloadTask) => boolean;
   hasDownloadTask: (taskId: string) => boolean;
 };
 
-type StartFakeDownloadTasksResult = {
+type DownloadTasksResult = {
   createdCount: number;
   skippedCount: number;
 };
 
-export async function startFakeDownloadTasks({
+export async function startDownloadTasks({
   comic,
   chapters,
+  chapterCount,
   addDownloadTask,
   hasDownloadTask,
-}: FakeDownloadServiceParams): Promise<StartFakeDownloadTasksResult> {
+}: DownloadServiceParams): Promise<DownloadTasksResult> {
   let createdCount = 0;
   let skippedCount = 0;
 
@@ -34,6 +36,8 @@ export async function startFakeDownloadTasks({
       comicTitle: comic.title,
       chapterId: chapter.id,
       chapterTitle: chapter.title,
+      chapterOrder: chapter.order,
+      chapterCount,
     });
 
     const added = addDownloadTask(task);

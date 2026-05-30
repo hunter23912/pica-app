@@ -1,6 +1,8 @@
 mod comic;
 mod config;
 mod download;
+mod fake_pica;
+mod pica_client;
 mod user;
 
 use config::Config;
@@ -32,6 +34,7 @@ pub fn run() {
             comic::get_downloaded_comics,
             comic::get_comic_detail,
             download::create_download_task,
+            download::open_chapter_dir,
             download::open_download_dir,
             download::get_default_download_dir,
         ])

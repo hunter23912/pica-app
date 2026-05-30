@@ -2,6 +2,7 @@ import { create } from "zustand";
 import type {
   Comic,
   Config,
+  DownloadLog,
   DownloadTask,
   MainTab,
   SearchResult,
@@ -39,7 +40,9 @@ type NavigationSlice = {
 
 type DownloadSlice = {
   downloadTasks: DownloadTask[];
+  downloadLogs: DownloadLog[];
   addDownloadTask: (task: DownloadTask) => boolean;
+  addDownloadLog: (log: DownloadLog) => void;
   hasDownloadTask: (taskId: string) => boolean;
   updateDownloadTask: (
     taskId: string,
@@ -49,6 +52,7 @@ type DownloadSlice = {
   clearInactiveDownloadTaskRecords: () => void;
   pauseDownloadTask: (taskId: string) => void;
   resumeDownloadTask: (taskId: string) => void;
+  clearDownloadLogs: () => void;
 };
 
 type AppStore = ConfigSlice & UserSlice & NavigationSlice & DownloadSlice;
@@ -115,6 +119,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
   // Download tasks
   downloadTasks: [],
+  downloadLogs: [],
   addDownloadTask: (task) => {
     const exists = get().downloadTasks.some(
       (currentTask) => currentTask.id === task.id,
@@ -129,6 +134,11 @@ export const useAppStore = create<AppStore>((set, get) => ({
     }));
 
     return true;
+  },
+  addDownloadLog: (log) => {
+    set((state) => ({
+      downloadLogs: [...state.downloadLogs, log].slice(-100),
+    }));
   },
   hasDownloadTask: (taskId) => {
     return get().downloadTasks.some((task) => task.id === taskId);
@@ -178,5 +188,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
           : task,
       ),
     }));
+  },
+  clearDownloadLogs: () => {
+    set({ downloadLogs: [] });
   },
 }));

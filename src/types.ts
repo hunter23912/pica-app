@@ -13,6 +13,7 @@ export type Comic = {
   id: string;
   title: string;
   author: string;
+  chapterCount?: number;
 };
 
 export type ComicInSearch = {
@@ -20,6 +21,8 @@ export type ComicInSearch = {
   title: string;
   author: string;
   coverUrl?: string;
+  chapterCount?: number;
+  downloadedChapterCount?: number;
 };
 
 export type SearchResult = {
@@ -30,14 +33,20 @@ export type Chapter = {
   id: string;
   title: string;
   order: number;
+  state?: string;
+  progress?: number;
 };
 
 export type MainTab = "search" | "favorite" | "rank" | "library" | "chapter";
 
 export type DownloadTask = {
   id: string;
+  comicId: string;
   comicTitle: string;
+  chapterId: string;
   chapterTitle: string;
+  chapterOrder: number;
+  chapterCount: number;
   downloadDir: string;
   chapterConcurrency: number;
   imageConcurrency: number;
@@ -49,6 +58,14 @@ export type DownloadTask = {
     | "failed"
     | "paused";
   progress: number;
+  errorMessage?: string;
+};
+
+export type DownloadLog = {
+  taskId: string;
+  level: "info" | "error";
+  message: string;
+  createdAt: string;
 };
 
 export type FavoriteResult = {

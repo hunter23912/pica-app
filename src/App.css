@@ -24,6 +24,7 @@ body {
 
 h1,
 h2,
+h3,
 p {
   margin: 0;
 }
@@ -151,6 +152,11 @@ button:active {
   border: 0;
 }
 
+.comic-card-description {
+  color: #a8a8a8;
+  font-size: 13px;
+}
+
 .panel-header {
   display: flex;
   align-items: center;
@@ -210,8 +216,18 @@ button:active {
   background: #151515;
 }
 
+.chapter-row-disabled {
+  opacity: 0.6;
+}
+
 .chapter-row input {
   width: auto;
+}
+
+.chapter-status {
+  margin-left: auto;
+  color: #a8a8a8;
+  font-size: 13px;
 }
 
 .download-task-list {
@@ -264,6 +280,44 @@ button:active {
 .download-task-config {
   color: #a8a8a8;
   font-size: 13px;
+}
+
+.download-log-panel {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.download-log-panel h3 {
+  font-size: 16px;
+}
+
+.download-log-list {
+  display: grid;
+  gap: 6px;
+}
+
+.download-log-row {
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: #cfcfcf;
+  background: #151515;
+  font-size: 13px;
+}
+
+.download-log-row-info {
+  color: #cfcfcf;
+}
+
+.download-log-row-error {
+  color: #ff6b6b;
+}
+
+.download-log-time {
+  color: #8f8f8f;
+  font-size: 12px;
 }
 
 .progress-bar {
