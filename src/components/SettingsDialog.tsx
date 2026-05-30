@@ -133,6 +133,26 @@ export function SettingsDialog({
             }
           />
         </label>
+
+        <label className="form-field">
+          <span>API 模式</span>
+          <label className="checkbox-field">
+            <input
+              type="checkbox"
+              checked={draftConfig.useRealApi}
+              onChange={(event) =>
+                setDraftConfig({
+                  ...draftConfig,
+                  useRealApi: event.currentTarget.checked,
+                })
+              }
+            />
+            <span>启用真实 API 模式</span>
+          </label>
+          <p className="field-help">
+            当前真实 API 尚未接入，开启后下一步会走真实客户端路径。
+          </p>
+        </label>
         {error && <p className="error-text">{error}</p>}
         <div className="dialog-actions">
           <button onClick={onClose}>取消</button>

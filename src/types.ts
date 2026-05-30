@@ -3,6 +3,7 @@ export type Config = {
   downloadDir: string;
   chapterConcurrency: number;
   imageConcurrency: number;
+  useRealApi: boolean;
 };
 
 export type UserProfile = {

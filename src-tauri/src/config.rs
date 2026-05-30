@@ -8,6 +8,7 @@ pub struct Config {
     pub download_dir: String,
     pub chapter_concurrency: u32,
     pub image_concurrency: u32,
+    pub use_real_api: bool,
 }
 
 impl Default for Config {
@@ -17,6 +18,7 @@ impl Default for Config {
             download_dir: String::new(),
             chapter_concurrency: 2,
             image_concurrency: 4,
+            use_real_api: false,
         }
     }
 }

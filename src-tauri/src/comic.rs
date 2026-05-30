@@ -1,4 +1,5 @@
 use crate::config::Config;
+use crate::pica_client::PicaClient;
 use tauri::AppHandle;
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -37,52 +38,64 @@ pub struct ComicDetail {
     pub chapters: Vec<Chapter>,
 }
 
-fn ensure_authorized(app: &AppHandle, message: &str) -> Result<(), String> {
+fn load_authorized_config(app: &AppHandle, message: &str) -> Result<Config, String> {
     let config = Config::load(app)?;
 
     if config.token.trim().is_empty() {
         return Err(message.to_string());
     }
 
-    Ok(())
+    Ok(config)
 }
 
 #[tauri::command]
-pub fn search_comic(app: AppHandle, keyword: String) -> Result<SearchResult, String> {
-    ensure_authorized(&app, "请先登录后再搜索漫画")?;
+pub async fn search_comic(app: AppHandle, keyword: String) -> Result<SearchResult, String> {
+    let config = load_authorized_config(&app, "请先登录后再搜索漫画")?;
 
     if keyword.trim().is_empty() {
         return Err("请输入搜索关键词".to_string());
     }
 
-    Ok(SearchResult {
-        comics: crate::fake_pica::search_comics(keyword.trim()),
-    })
+    let comics = if config.use_real_api {
+        PicaClient::new(config.token)
+            .search_comics(keyword.trim())
+            .await?
+    } else {
+        crate::fake_pica::search_comics(keyword.trim())
+    };
+
+    Ok(SearchResult { comics })
 }
 
 #[tauri::command]
 pub fn get_favorite(app: AppHandle) -> Result<SearchResult, String> {
-    ensure_authorized(&app, "请先登录后再查看收藏夹")?;
+    let config = load_authorized_config(&app, "请先登录后再查看收藏夹")?;
 
-    Ok(SearchResult {
-        comics: crate::fake_pica::comics("favorite", "收藏漫画", "收藏作者"),
-    })
+    let comics = if config.use_real_api {
+        PicaClient::new(config.token).get_favorite()?
+    } else {
+        crate::fake_pica::comics("favorite", "收藏漫画", "收藏作者")
+    };
+
+    Ok(SearchResult { comics })
 }
 
 #[tauri::command]
 pub fn get_rank(app: AppHandle) -> Result<SearchResult, String> {
-    ensure_authorized(&app, "请先登录后再查看排行榜")?;
+    let config = load_authorized_config(&app, "请先登录后再查看排行榜")?;
 
-    Ok(SearchResult {
-        comics: crate::fake_pica::comics("rank", "排行榜漫画", "排行作者"),
-    })
+    let comics = if config.use_real_api {
+        PicaClient::new(config.token).get_rank()?
+    } else {
+        crate::fake_pica::comics("rank", "排行榜漫画", "排行作者")
+    };
+
+    Ok(SearchResult { comics })
 }
 
 #[tauri::command]
 pub fn get_downloaded_comics(app: AppHandle) -> Result<SearchResult, String> {
-    ensure_authorized(&app, "请先登录后再查看本地库存")?;
-
-    let config = Config::load(&app)?;
+    let config = load_authorized_config(&app, "请先登录后再查看本地库存")?;
     let download_dir = config.effective_download_dir(&app)?;
     let comics = scan_downloaded_comics(&download_dir)?;
 
@@ -91,13 +104,16 @@ pub fn get_downloaded_comics(app: AppHandle) -> Result<SearchResult, String> {
 
 #[tauri::command]
 pub fn get_comic_detail(app: AppHandle, comic_id: String) -> Result<ComicDetail, String> {
-    ensure_authorized(&app, "请先登录后再查看漫画详情")?;
-
-    let config = Config::load(&app)?;
+    let config = load_authorized_config(&app, "请先登录后再查看漫画详情")?;
     let download_dir = config.effective_download_dir(&app)?;
     let local_chapters = scan_local_chapters(&download_dir, &comic_id)?;
 
-    let chapters = merge_local_chapter_state(crate::fake_pica::chapters(&comic_id), local_chapters);
+    let remote_chapters = if config.use_real_api {
+        PicaClient::new(config.token).get_chapters(&comic_id)?
+    } else {
+        crate::fake_pica::chapters(&comic_id)
+    };
+    let chapters = merge_local_chapter_state(remote_chapters, local_chapters);
 
     Ok(ComicDetail {
         id: comic_id,

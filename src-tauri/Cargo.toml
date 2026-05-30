@@ -23,4 +23,8 @@ tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tauri-plugin-dialog = "2.7.1"
+hmac = "0.13.0"
+sha2 = "0.11.0"
+hex = "0.4.3"
+reqwest = { version = "0.13.4", default-features = false, features = ["rustls", "json"] }
 

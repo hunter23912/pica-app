@@ -356,6 +356,16 @@ button:active {
   font-size: 13px;
 }
 
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-field input {
+  width: auto;
+}
+
 @media (max-width: 900px) {
   .app-layout {
     grid-template-columns: 1fr;
